@@ -1,16 +1,33 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity, Pressable, StyleSheet, Text, View } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
-export default function ModalPass() {
+export default function ModalPass({pass, handleClose}) {
+
+  async function handleCopyPass(){
+    await Clipboard.setStringAsync(pass);
+    alert("Senha copiada!");
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>Senha gerada</Text>
 
-        <Pressable style={styles.innerPass}>
-          <Text style={styles.text}>134</Text>
+        <Pressable style={styles.innerPass} onLongPress={handleCopyPass}>
+          <Text style={styles.text}>{pass}</Text>
         </Pressable>
 
+        <View style={styles.buttonArea}>
+          
+          <TouchableOpacity style={styles.button} onPress={handleClose}>
+            <Text style={styles.buttonText}>Voltar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.button, styles.buttonSave]}>
+            <Text style={styles.buttonSaveText}>Salvar Senha</Text>
+          </TouchableOpacity>
+
+        </View>
       </View>
     </View>
   );
@@ -24,32 +41,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   content:{
-    marginTop: 24,
-    marginBottom: 24,
+    paddingTop: 24,
+    paddingBottom: 24,
     width: "85%",
     backgroundColor: "#fff",
     borderRadius: 8,
-    padding: 8,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  button:{
-    backgroundColor:"#393def",
-    width: "80%",
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    marginBottom: 18
-  },
-  buttonText:{
-    color: "#fff",
-    fontSize: 19,
   },
   title:{
     fontSize: 30,
     fontWeight: 'bold',
-    color: "#000"
+    color: "#000",
+    marginBottom: 24,
   },
   innerPass:{
     backgroundColor: "#0e0e0e",
@@ -62,6 +66,25 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   buttonArea:{
-    flexDirection: "row"
+    flexDirection: "row",
+    width: "90%",
+    marginTop: 8,
+    alignItems: 'center',
+    justifyContent: 'space-between',    
+  },
+  button:{
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 14,
+    margingBottom: 14,    
+    padding: 8
+  },
+  buttonSave:{
+    backgroundColor: "#392DE9"  ,
+    borderRadius: 8,
+  },
+  buttonSaveText:{
+    color:"#fff",
+    fontWeight: 'bold'
   }
 });
