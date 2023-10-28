@@ -6,7 +6,7 @@ import ModalPass from '../../components/modal';
 
 let charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-export default function Home() {
+export function Home() {
 
   const[size, setSize] = useState(10);
   const[password, setPassword] = useState("");

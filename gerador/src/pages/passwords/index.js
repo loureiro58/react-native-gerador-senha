@@ -1,47 +1,63 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
+import { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import useStorage from '../../hooks/useStorage';
+import {PasswordItem} from './components/passwordItem';
 
-export default function Passwords() {
+export function Passwords() {
+  const [lista, setLista] = useState([]);
+  const focused = useIsFocused();
+  const {getItem, removeItem} = useStorage();
+
+
+  useEffect(() => {
+    async function loadPass(){
+      const passwords = await getItem("@pass");
+      setLista(passwords);
+    }
+    loadPass();
+  }, [focused])
+
+  async function handleDeletePass(item){
+    const pws = await removeItem("@pass", item);
+    setLista(pws);
+  }
 
   return (
-    <View style={styles.container}>
-        <Text style={styles.buttonText}>Minhas senhas</Text>
-    </View>
+    <SafeAreaView style={{flex: 1,}}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Minhas senhas</Text>
+      </View>
+
+      <View style={styles.content}>
+        <FlatList
+          style={{flex:1, paddingTop:14 }}
+          data={lista}
+          keyExtractor={ (item) => String(item) }
+          renderItem={ ({item }) => <PasswordItem data={item} removePass={ () => handleDeletePass(item)} /> }
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F3FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo:{
-    marginBottom: 60
-  },
-  area:{
-    marginTop: 14,
-    marginBottom: 14,
-    width: "80%",
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 8
-  },
-  button:{
-    backgroundColor:"#393def",
-    width: "80%",
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 8,
-    marginBottom: 18
-  },
-  buttonText:{
-    color: "#fff",
-    fontSize: 19,
+  header: {
+    backgroundColor: "#392DE9", 
+    paddingTop: 58,
+    paddingBottom: 14,
+    paddingLeft:14,
+    paddingRight: 14,
   },
   title:{
-    fontSize: 30,
+    fontSize: 18,
+    color:"#fff",
     fontWeight: 'bold'
+  },
+  content:{
+    flex: 1,
+    paddingLeft:14,
+    paddingRight: 14,
   }
 });
